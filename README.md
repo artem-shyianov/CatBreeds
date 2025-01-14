@@ -10,10 +10,10 @@ You need to have XCode 16 to run this project
   </tr>
   <tr>
     <td>
-      <img src = "https://github.com/user-attachments/assets/cfcf7e8a-5e63-4890-8e06-94d3ad688f4b" />
+      <img src = "https://github.com/user-attachments/assets/e916cfe3-78a7-45af-a292-92fa7726bbc5" />
     </td>
     <td>
-      <img src = "https://github.com/user-attachments/assets/648fcdb1-2c71-4c21-abd1-6fcfba1e184b" />
+      <img src = "https://github.com/user-attachments/assets/fcca5fc3-4614-4c93-97e5-a12be416e7d8" />
     </td>
 <!--      <td>
       <img src = "https://github.com/user-attachments/assets/0a625954-6c19-422f-959a-e8046c70691b" />
