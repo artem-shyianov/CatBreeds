@@ -6,6 +6,7 @@
 //
 
 import XCTest
+@testable import CatBreedsApp
 
 class CatBreedsTestCase : XCTestCase {
     
@@ -23,5 +24,15 @@ class CatBreedsTestCase : XCTestCase {
     
     func randomInt(max: Int = 10) -> Int {
         Int.random(in: 0..<max)
+    }
+    
+    func randomCatBreed() -> CatBreed {
+        CatBreed(
+            id: randomString(),
+            name: randomString(),
+            description: randomString(),
+            temperament: randomString(),
+            image: nil
+        )
     }
 }

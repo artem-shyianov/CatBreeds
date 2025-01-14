@@ -12,7 +12,8 @@ struct CatBreedsView: View {
     // MARK: - Properties
 
     @ObservedObject var viewModel: CatBreedsViewModel
-    
+    @State private var selectedBread: CatBreed? = nil
+
     private let columns = Array(repeating: GridItem(), count: 2)
     
     // MARK: - Body
@@ -21,16 +22,13 @@ struct CatBreedsView: View {
         NavigationView {
             Group {
                 switch viewModel.state {
+                case .loading:
+                    ProgressView()
                 case .failure:
                     VStack(spacing: 16) {
-                        Text(localizedString("networkError.text"))
+                        Text("networkError.text")
                             .font(.title3)
                             .multilineTextAlignment(.center)
-                        Button("Refresh", action: {
-                            Task {
-                                await viewModel.fetchCatBreeds()
-                            }
-                        })
                     }
                     .padding()
                 case .success(let breeds):
@@ -38,31 +36,29 @@ struct CatBreedsView: View {
                         LazyVGrid(columns: columns) {
                             ForEach(breeds) { breed in
                                 CatBreedRow(breed: breed)
+                                .onTapGesture {
+                                    selectedBread = breed
+                                }
                                 .task {
-                                    if viewModel.hasReachedEnd(of: breed) && viewModel.hasMoreCats {
-                                       await viewModel.fetchMoreBreeds()
-                                    }
+                                    viewModel.fetchMoreBreedsIfNeeded(with: breed)
                                 }
                             }
                         }
                         
-                        if !viewModel.breeds.isEmpty, viewModel.hasMoreCats {
+                        if !breeds.isEmpty, viewModel.hasMoreCats {
                             ProgressView("loadMore.message")
                                 .padding()
                                 .frame(maxWidth: .infinity)
                         }
-                    }.refreshable {
-                        viewModel.reset()
-                        Task {
-                            await viewModel.fetchCatBreeds()
-                        }
+                    }.sheet(item: self.$selectedBread) { breed in
+                        CatDetailView(breed: breed)
                     }
                 }
             }
             .task {
-                await viewModel.fetchCatBreeds()
+                viewModel.fetchCatBreeds()
             }
-            .navigationTitle(localizedString("navigation.title"))
+            .navigationTitle("navigation.title")
         }
         .navigationViewStyle(.stack)
     }
@@ -70,12 +66,10 @@ struct CatBreedsView: View {
 
 // MARK: - Preview
 
-struct CatBreedsView_Previews: PreviewProvider {
-    static var previews: some View {
-        CatBreedsView(
-            viewModel: CatBreedsViewModel(
-                breedsFetcher: MockCatBreedsFetcher()
-            )
+#Preview {
+    CatBreedsView(
+        viewModel: CatBreedsViewModel(
+            breedsFetcher: MockCatBreedsFetcher()
         )
-    }
+    )
 }

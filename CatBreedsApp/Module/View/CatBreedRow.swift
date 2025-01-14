@@ -14,8 +14,6 @@ struct CatBreedRow: View {
 
     let breed: CatBreed
     
-    @State var isSheetPresented = false
-
     private let cornerRadius: CGFloat = 16
     
     // MARK: - Body
@@ -30,12 +28,6 @@ struct CatBreedRow: View {
                 .lineLimit(2)
         }
         .frame(height: 200)
-        .onTapGesture {
-            isSheetPresented.toggle()
-        }
-        .sheet(isPresented: self.$isSheetPresented) {
-            CatDetailView(breed: breed)
-        }
     }
     
     var placeholderImage: some View {
@@ -61,10 +53,8 @@ struct CatBreedRow: View {
 
 // MARK: - Previews
 
-struct CatBreedRow_Previews: PreviewProvider {
-    static var previews: some View {
-        if let breed = CatBreed.mock.first {
-            CatBreedRow(breed: breed)
-        }
+#Preview {
+    if let breed = CatBreed.mock.first {
+        CatBreedRow(breed: breed)
     }
 }

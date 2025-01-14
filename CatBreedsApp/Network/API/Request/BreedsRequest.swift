@@ -21,7 +21,7 @@ extension CatBreedsRequest: RequestProtocol {
     }
 
     var itemsCount: Int {
-        return 10
+        10
     }
     
     var queryItems: [URLQueryItem] {

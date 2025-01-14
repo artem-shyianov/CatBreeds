@@ -2,14 +2,13 @@ import XCTest
 @testable import CatBreedsApp
 
 @MainActor
-final class CatBreedsViewModelTests: XCTestCase {
+final class CatBreedsViewModelTests: CatBreedsTestCase {
 
     // MARK: - Properties
 
     private var viewModel: CatBreedsViewModel!
     private var breedsFetcher: MockCatBreedsFetcher!
     
-    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -36,7 +35,9 @@ final class CatBreedsViewModelTests: XCTestCase {
             "the view model's page property should be 0 before fetching, but it's \(viewModel.page)"
         )
 
-        await viewModel.fetchMoreBreeds()
+        let breed = randomCatBreed()
+        viewModel.breeds = [breed]
+        await viewModel.fetchMoreBreedsIfNeeded(with: breed)
 
         XCTAssertEqual(
             viewModel.page,

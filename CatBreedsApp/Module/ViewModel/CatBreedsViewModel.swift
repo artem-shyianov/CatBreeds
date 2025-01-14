@@ -14,6 +14,7 @@ protocol CatBreedsFetcher {
 }
 
 enum BreedsViewState {
+    case loading
     case success(breads: CatBreeds)
     case failure(error: Error)
 }
@@ -23,13 +24,13 @@ final class CatBreedsViewModel: ObservableObject {
 
     // MARK: - Properties
 
-    @Published var hasMoreCats = true
     @Published var breeds: CatBreeds = []
-    @Published var isLoading: Bool = true
     @Published var state: BreedsViewState = .success(breads: [])
     
     private let breedsFetcher: CatBreedsFetcher
     private(set) var page = 0
+    private(set) var hasMoreCats = true
+    
 
     // MARK: - Initialization
 
@@ -43,29 +44,31 @@ final class CatBreedsViewModel: ObservableObject {
 // MARK: - Internal Helper Methods
 
 extension CatBreedsViewModel {
-    func reset() {
-        self.page = 0
-        self.breeds = []
-    }
-    
-    func fetchCatBreeds() async {
-        isLoading = true
-        do {
-            let breeds = try await breedsFetcher.fetchCatBreeds(page: page)
-            self.breeds += breeds
-            
-            state = .success(breads: self.breeds)
-            hasMoreCats = !breeds.isEmpty
-        } catch {
-            state = .failure(error: error)
+    func fetchCatBreeds() {
+        Task {
+            do {
+                if self.breeds.isEmpty {
+                    state = .loading
+                }
+                
+                let breeds = try await breedsFetcher.fetchCatBreeds(page: page)
+                self.breeds += breeds
+                
+                state = .success(breads: self.breeds)
+                hasMoreCats = !breeds.isEmpty
+            } catch {
+                state = .failure(error: error)
+            }
         }
-        isLoading = false
-        
     }
 
-    func fetchMoreBreeds() async {
+    func fetchMoreBreedsIfNeeded(with breed: CatBreed) {
+        guard hasReachedEnd(of: breed) && hasMoreCats else {
+            return
+        }
+           
         page += 1
-        await fetchCatBreeds()
+        fetchCatBreeds()
     }
     
     func hasReachedEnd(of bread: CatBreed) -> Bool {

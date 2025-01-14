@@ -11,17 +11,15 @@ struct ContentView: View {
     
     private var requestManager: RequestManagerProtocol = {
         let apiManager = APIManager(urlSession: URLSession.shared)
-        let dataParser = DataParser()
         
-        return RequestManager(apiManager: apiManager, parser: dataParser)
+        return RequestManager(apiManager: apiManager)
     }()
     
     var body: some View {
         CatBreedsView(
             viewModel: .init(
                 breedsFetcher: CatBreedsService(
-                    requestManager: requestManager,
-                    cache: Cache<Int, CatBreeds>()
+                    requestManager: requestManager
                 )
             )
         )

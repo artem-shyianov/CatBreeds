@@ -29,7 +29,7 @@ struct CatDetailView: View {
                     breedContent
                 }
             }
-            .navigationBarItems(trailing: Button(localizedString("dismiss.title"), action: {
+            .navigationBarItems(trailing: Button("dismiss.title", action: {
                 dismiss()
             }))
             .navigationTitle(breed.name ?? "")
@@ -63,10 +63,8 @@ struct CatDetailView: View {
 
 // MARK: - Preview
 
-struct CatBreedsDetails_Previews: PreviewProvider {
-    static var previews: some View {
-        if let breed = CatBreed.mock.first {
-            CatDetailView(breed: breed)
-        }
+#Preview {
+    if let breed = CatBreed.mock.first {
+        CatDetailView(breed: breed)
     }
 }

@@ -12,9 +12,8 @@ final class RequestManagerTests: XCTestCase {
         super.setUp()
 
         apiManager = MockAPIManager()
-        let parser = DataParser()
         
-        requestManager = RequestManager(apiManager: apiManager, parser: parser)
+        requestManager = RequestManager(apiManager: apiManager)
     }
 
     override func tearDown() {

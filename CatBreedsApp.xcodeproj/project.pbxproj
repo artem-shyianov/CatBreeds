@@ -39,7 +39,6 @@
 			membershipExceptions = (
 				Tests/Network/Data/API/Mock/MockCatBreed.swift,
 				Tests/Network/Data/API/Mock/MockCatBreedsFetcher.swift,
-				Tests/Network/Data/Cache/Cache.swift,
 			);
 			target = E32F7BC82D2D7EA30020B26D /* CatBreedsApp */;
 		};
@@ -48,7 +47,6 @@
 			membershipExceptions = (
 				Tests/Network/Data/API/Mock/MockCatBreed.swift,
 				Tests/Network/Data/API/Mock/MockCatBreedsFetcher.swift,
-				Tests/Network/Data/Cache/Cache.swift,
 			);
 			target = E32F7BD82D2D7EA40020B26D /* CatBreedsAppTests */;
 		};

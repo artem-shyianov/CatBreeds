@@ -18,7 +18,13 @@ struct CatBreed: Codable, Identifiable {
     let temperament: String?
     let image: CatBreedImage?
     
-    public init(id: String, name: String?, description: String?, temperament: String?, image: CatBreedImage?) {
+    public init(
+        id: String,
+        name: String?,
+        description: String?,
+        temperament: String?,
+        image: CatBreedImage?
+    ) {
         self.id = id
         self.name = name
         self.description = description
@@ -35,6 +41,18 @@ struct CatBreedImage: Codable {
     let width: Int?
     let height: Int?
     let url: String?
+    
+    public init(
+        id: String?,
+        width: Int?,
+        height: Int?,
+        url: String?
+    ) {
+        self.id = id
+        self.width = width
+        self.height = height
+        self.url = url
+    }
 }
 
 // MARK: - Hashable
