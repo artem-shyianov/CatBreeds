@@ -62,16 +62,9 @@ extension CatBreedsViewModel {
         }
     }
 
-    func fetchMoreBreedsIfNeeded(with breed: CatBreed) {
-        guard hasReachedEnd(of: breed) && hasMoreCats else {
-            return
-        }
+    func loadMore() {
         print("Load more")
         page += 1
         fetchCatBreeds()
-    }
-    
-    func hasReachedEnd(of bread: CatBreed) -> Bool {
-        breeds.last?.id == bread.id
     }
 }

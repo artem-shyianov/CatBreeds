@@ -32,13 +32,16 @@ struct CatBreedsView: View {
                                 .padding(cardInsets)
                             }
                             .buttonStyle(PlainButtonStyle())
+                            
+                            if breed == breeds.last && viewModel.hasMoreCats {
+                                ProgressView("loadMore.message")
+                                .onAppear {
+                                    viewModel.loadMore()
+                                }
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                            }
                         }
-                    }
-                    
-                    if !breeds.isEmpty, viewModel.hasMoreCats {
-                        ProgressView("loadMore.message")
-                            .padding()
-                            .frame(maxWidth: .infinity)
                     }
                     
                 case .failure:
@@ -54,7 +57,7 @@ struct CatBreedsView: View {
                     ProgressView()
                 }
             }
-            .task {
+            .onAppear {
                 if viewModel.breeds.isEmpty {
                     viewModel.fetchCatBreeds()
                 }
