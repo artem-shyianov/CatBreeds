@@ -9,46 +9,82 @@ import SwiftUI
 import CachedAsyncImage
 
 struct CatDetailView: View {
-    @Environment(\.dismiss) var dismiss
     
     let breed: CatBreed
     
     var body: some View {
-        NavigationView {
-            VStack(alignment: .leading) {
-                ScrollView {
-                    if let url = breed.image?.url {
-                        CachedAsyncImage(url: url, placeholder: { _ in
-                            Color.gray
-                        }, image: {
-                            Image(uiImage: $0)
-                                .resizable()
-                                .scaledToFit()
-                        })
-                    }
-                    breedContent
-                }
-            }
-            .navigationBarItems(trailing: Button("dismiss.title", action: {
-                dismiss()
-            }))
-            .navigationTitle(breed.name ?? "")
+        ScrollView {
+            logoImageView
+            .frame(height: 366)
+            .clipped()
+            breedContent
+                .background(Color.white)
+        }
+        .navigationTitle(breed.name ?? "")
+    }
+    
+    var logoImageView: some View {
+        AsyncImage(url: breed.image?.url) { image in
+            image
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+                .frame(minWidth: 0, maxWidth: .infinity)
+                
+        } placeholder: {
+            placeholderImage
         }
     }
     
-
+    var dividerView: some View {
+        Divider()
+            .frame(height: 6)
+    }
+    
+    var placeholderImage: some View {
+        Rectangle().fill(.gray)
+    }
     
     var breedContent: some View {
-       VStack(alignment: .leading) {
-           Text(breed.temperament ?? "No temperament available")
-               .font(.caption)
-               .foregroundColor(.secondary)
-           Spacer()
-           Text(detailsText)
-               .font(.body)
-               .foregroundColor(.primary)
+        VStack(alignment: .leading, spacing: 10) {
+            Text("Country: \(breed.origin ?? "")")
+                .font(.body)
+            Text("Life span: \(breed.lifeSpan ?? "") years")
+                .font(.body)
+            Text("Intelligence: \(breed.intelligence)")
+                .font(.body)
+            Text("Adaptability: \(breed.adaptability)")
+                .font(.body)
+            dividerView
+            Text("Cat temperament:")
+                .font(.title2)
+                .bold()
+            
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(breed.temperaments, id: \.self) { temperament in
+                        Button {
+                            
+                        } label: {
+                            Text(temperament)
+                                .font(.headline)
+                        }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.capsule)
+                        .frame(maxHeight: 30)
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+    
+            dividerView
+            Text("Cat description:")
+                .font(.title2)
+                .bold()
+            Text(detailsText)
+                .font(.body)
+                .foregroundColor(.primary)
        }
-       .padding()
+       .padding(15)
    }
     
     var detailsText: String {

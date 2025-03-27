@@ -14,7 +14,6 @@ protocol CatBreedsFetcher {
 }
 
 enum BreedsViewState {
-    case loading
     case success(breads: CatBreeds)
     case failure(error: Error)
 }
@@ -26,6 +25,7 @@ final class CatBreedsViewModel: ObservableObject {
 
     @Published var breeds: CatBreeds = []
     @Published var state: BreedsViewState = .success(breads: [])
+    @Published var isLoading: Bool = false
     
     private let breedsFetcher: CatBreedsFetcher
     private(set) var page = 0
@@ -47,16 +47,16 @@ extension CatBreedsViewModel {
     func fetchCatBreeds() {
         Task {
             do {
-                if self.breeds.isEmpty {
-                    state = .loading
-                }
+                self.isLoading = true
                 
                 let breeds = try await breedsFetcher.fetchCatBreeds(page: page)
                 self.breeds += breeds
                 
                 state = .success(breads: self.breeds)
+                self.isLoading = false
                 hasMoreCats = !breeds.isEmpty
             } catch {
+                self.isLoading = false
                 state = .failure(error: error)
             }
         }
@@ -66,7 +66,7 @@ extension CatBreedsViewModel {
         guard hasReachedEnd(of: breed) && hasMoreCats else {
             return
         }
-           
+        print("Load more")
         page += 1
         fetchCatBreeds()
     }

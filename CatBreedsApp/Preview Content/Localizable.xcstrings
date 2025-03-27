@@ -1,6 +1,18 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "Adaptability: %lld" : {
+
+    },
+    "Cat description:" : {
+
+    },
+    "Cat temperament:" : {
+
+    },
+    "Country: %@" : {
+
+    },
     "dismiss.title" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -11,6 +23,12 @@
           }
         }
       }
+    },
+    "Intelligence: %lld" : {
+
+    },
+    "Life span: %@ years" : {
+
     },
     "loadMore.message" : {
       "extractionState" : "manual",

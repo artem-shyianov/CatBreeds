@@ -12,57 +12,58 @@ struct CatBreedsView: View {
     // MARK: - Properties
 
     @ObservedObject var viewModel: CatBreedsViewModel
-    @State private var selectedBread: CatBreed? = nil
-
-    private let columns = Array(repeating: GridItem(), count: 2)
+    
+    private let columns = [ GridItem(.flexible()) ]
+    private let cardInsets = EdgeInsets(top: 0, leading: 15, bottom: 5, trailing: 15)
     
     // MARK: - Body
 
     var body: some View {
-        NavigationView {
-            Group {
+        NavigationStack {
+            ScrollView {
                 switch viewModel.state {
-                case .loading:
-                    ProgressView()
+                case .success(let breeds):
+                    LazyVGrid(columns: columns) {
+                        ForEach(breeds, id: \.id) { breed in
+                            NavigationLink {
+                                CatDetailView(breed: breed)
+                            } label: {
+                                CatBreedRow(breed: breed)
+                                .padding(cardInsets)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                    }
+                    
+                    if !breeds.isEmpty, viewModel.hasMoreCats {
+                        ProgressView("loadMore.message")
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                    }
+                    
                 case .failure:
                     VStack(spacing: 16) {
                         Text("networkError.text")
                             .font(.title3)
                             .multilineTextAlignment(.center)
                     }
-                    .padding()
-                case .success(let breeds):
-                    ScrollView {
-                        LazyVGrid(columns: columns) {
-                            ForEach(breeds) { breed in
-                                CatBreedRow(breed: breed)
-                                .onTapGesture {
-                                    selectedBread = breed
-                                }
-                                .task {
-                                    viewModel.fetchMoreBreedsIfNeeded(with: breed)
-                                }
-                            }
-                        }
-                        
-                        if !breeds.isEmpty, viewModel.hasMoreCats {
-                            ProgressView("loadMore.message")
-                                .padding()
-                                .frame(maxWidth: .infinity)
-                        }
-                    }.sheet(item: self.$selectedBread) { breed in
-                        CatDetailView(breed: breed)
-                    }
+                }
+            }
+            .overlay {
+                if viewModel.isLoading {
+                    ProgressView()
                 }
             }
             .task {
-                viewModel.fetchCatBreeds()
+                if viewModel.breeds.isEmpty {
+                    viewModel.fetchCatBreeds()
+                }
             }
             .navigationTitle("navigation.title")
         }
-        .navigationViewStyle(.stack)
     }
 }
+
 
 // MARK: - Preview
 
